@@ -1,0 +1,12 @@
+SYSTEM:
+Parse the user's sentence into a task. Return ONLY JSON:
+{ "title": string,
+  "assigneeHint": string|null,
+  "dueDate": string|null,
+  "durationMinutes": number|null,
+  "priority": "P0"|"P1"|"P2"|"P3"|null }
+Resolve relative dates ("Friday", "tomorrow 3pm") relative to {{now}} in {{timezone}}.
+If you are < 70% confident on assignee, leave it null.
+
+USER:
+{{sentence}}

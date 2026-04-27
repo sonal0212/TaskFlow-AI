@@ -1,0 +1,74 @@
+plugins {
+  id 'java'
+  id 'org.springframework.boot' version '3.3.5'
+  id 'io.spring.dependency-management' version '1.1.6'
+  id 'org.flywaydb.flyway' version '10.20.1'
+}
+
+group = 'com.taskflow'
+version = '1.0.0'
+
+java {
+  toolchain { languageVersion = JavaLanguageVersion.of(21) }
+}
+
+repositories { mavenCentral() }
+
+ext {
+  springAiVersion = '1.0.0-M3'
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+  }
+}
+
+dependencies {
+  // Web + validation
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-validation'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+  // Persistence — Supabase Postgres via JPA
+  implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+  implementation 'org.flywaydb:flyway-core'
+  implementation 'org.flywaydb:flyway-database-postgresql'
+  runtimeOnly 'org.postgresql:postgresql'
+
+  // Redis (cache + token store + STOMP relay)
+  implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+  // Real-time
+  implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+  // Security + JWT
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+  implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+  runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+  runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+  // AI — Spring AI / OpenAI
+  implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
+  // OpenAPI docs (BRD §11)
+  implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
+
+  // Dev tools
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+  // Lombok
+  compileOnly 'org.projectlombok:lombok:1.18.34'
+  annotationProcessor 'org.projectlombok:lombok:1.18.34'
+
+  // Test
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.security:spring-security-test'
+  testImplementation 'org.testcontainers:junit-jupiter:1.20.3'
+  testImplementation 'org.testcontainers:postgresql:1.20.3'
+  testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+  useJUnitPlatform()
+}
